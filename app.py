@@ -17,8 +17,20 @@ except:
 # Initialize Firebase (Database)
 # We check if it's already initialized to prevent errors on app rerun
 if not firebase_admin._apps:
-    # Load the secret JSON from Streamlit secrets
-    key_dict = json.loads(st.secrets["FIREBASE_KEY"])
+# Create the credentials dictionary manually from Secrets
+    key_dict = {
+        "type": "service_account",
+        "project_id": st.secrets["firebase"]["project_id"],
+        "private_key_id": st.secrets["firebase"]["private_key_id"],
+        "private_key": st.secrets["firebase"]["private_key"],
+        "client_email": st.secrets["firebase"]["client_email"],
+        "client_id": st.secrets["firebase"]["client_id"],
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_x509_cert_url": st.secrets["firebase"]["client_x509_cert_url"]
+    }
+    
     cred = credentials.Certificate(key_dict)
     firebase_admin.initialize_app(cred)
 
